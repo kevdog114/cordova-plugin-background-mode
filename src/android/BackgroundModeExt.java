@@ -270,7 +270,7 @@ public class BackgroundModeExt extends CordovaPlugin {
 
                 activity.runOnUiThread(new Thread(new Runnable() {
                     public void run() {
-                        dialog::show();
+                        dialog.show();
                     }
                 }));
 
