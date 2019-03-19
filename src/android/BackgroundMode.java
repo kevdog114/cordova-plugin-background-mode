@@ -270,6 +270,11 @@ public class BackgroundMode extends CordovaPlugin {
         isBind = false;
     }
 
+    private void webViewLoadUrl (String javascript)
+    {
+        webView.loadUrl(javascript);
+    }
+
     /**
      * Fire vent with some parameters inside the web view.
      *
@@ -292,6 +297,6 @@ public class BackgroundMode extends CordovaPlugin {
 
         final String js = str;
 
-        cordova.getActivity().runOnUiThread(() -> webView.loadUrl("javascript:" + js));
+        cordova.getActivity().runOnUiThread(webViewLoadUrl("javascript:" + js));
     }
 }
