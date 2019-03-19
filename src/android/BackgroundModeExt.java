@@ -85,38 +85,46 @@ public class BackgroundModeExt extends CordovaPlugin {
     {
         boolean validAction = true;
 
-        switch (action)
+        if(action == "battery")
         {
-            case "battery":
-                disableBatteryOptimizations();
-                break;
-            case "webview":
-                disableWebViewOptimizations();
-                break;
-            case "appstart":
-                openAppStart(args.opt(0));
-                break;
-            case "background":
-                moveToBackground();
-                break;
-            case "foreground":
-                moveToForeground();
-                break;
-            case "tasklist":
-                excludeFromTaskList();
-                break;
-            case "dimmed":
-                isDimmed(callback);
-                break;
-            case "wakeup":
-                wakeup();
-                break;
-            case "unlock":
-                wakeup();
-                unlock();
-                break;
-            default:
-                validAction = false;
+            disableBatteryOptimizations();
+        }
+        else if(action == "webview")
+        {
+            disableWebViewOptimizations();
+        }
+        else if(action == "appstart")
+        {
+            openAppStart(args.opt(0));
+        }
+        else if(action == "background")
+        {
+            moveToBackground();
+        }
+        else if(action == "foreground")
+        {
+            moveToForeground();
+        }
+        else if(action == "tasklist")
+        {
+            excludeFromTaskList();
+        }
+        else if(action == "dimmed")
+        {
+            isDimmed(callback);
+        }
+        else if(action == "wakeup")
+        {
+            wakeup();
+        }
+        else if(action == "unlock")
+        {
+            wakeup();
+            unlock();
+        }
+        else
+        {
+            validAction = false;
         }
 
         if (validAction) {

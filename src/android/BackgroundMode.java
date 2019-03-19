@@ -93,19 +93,21 @@ public class BackgroundMode extends CordovaPlugin {
     {
         boolean validAction = true;
 
-        switch (action)
+        if(action == "configure")
         {
-            case "configure":
-                configure(args.optJSONObject(0), args.optBoolean(1));
-                break;
-            case "enable":
-                enableMode();
-                break;
-            case "disable":
-                disableMode();
-                break;
-            default:
-                validAction = false;
+            configure(args.optJSONObject(0), args.optBoolean(1));
+        }
+        else if(action == "enable")
+        {
+            enableMode();
+        }
+        else if(action == "disable")
+        {
+            disableMode();
+        }
+        else
+        {
+            validAction = false;
         }
 
         if (validAction) {
