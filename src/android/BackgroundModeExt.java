@@ -178,9 +178,11 @@ public class BackgroundModeExt extends CordovaPlugin {
             public void run() {
                 try {
                     Thread.sleep(1000);
-                    getApp().runOnUiThread(() -> {
-                        disableWebViewOptimizationsSync();
-                    });
+                    getApp().runOnUiThread(new Thread(new Runnable() {
+                        public void run() {
+                            disableWebViewOptimizationsSync();
+                        }
+                    }));
                 } catch (InterruptedException e) {
                     // do nothing
                 }
@@ -241,8 +243,15 @@ public class BackgroundModeExt extends CordovaPlugin {
 
                 AlertDialog.Builder dialog = new AlertDialog.Builder(activity, Theme_DeviceDefault_Light_Dialog);
 
-                dialog.setPositiveButton(ok, (o, d) -> activity.startActivity(intent));
-                dialog.setNegativeButton(cancel, (o, d) -> {});
+                dialog.setPositiveButton(ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        activity.startActivity(intent);
+                    }
+                });
+                dialog.setNegativeButton(cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
                 dialog.setCancelable(true);
 
                 if (spec != null && spec.has("title"))
