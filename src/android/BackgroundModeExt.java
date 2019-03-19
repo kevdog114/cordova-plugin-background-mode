@@ -268,7 +268,11 @@ public class BackgroundModeExt extends CordovaPlugin {
                     dialog.setMessage("missing text");
                 }
 
-                activity.runOnUiThread(dialog::show);
+                activity.runOnUiThread(new Thread(new Runnable() {
+                    public void run() {
+                        dialog::show();
+                    }
+                }));
 
                 break;
             }
