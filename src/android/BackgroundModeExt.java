@@ -167,19 +167,6 @@ public class BackgroundModeExt extends CordovaPlugin {
         app.startActivity(intent);
     }
 
-    private void disableWebViewOptimizationsSync()
-    {
-        View view = webView.getEngine().getView();
-
-        try {
-            Class.forName("org.crosswalk.engine.XWalkCordovaView")
-                 .getMethod("onShow")
-                 .invoke(view);
-        } catch (Exception e){
-            view.dispatchWindowVisibilityChanged(View.VISIBLE);
-        }
-    }
-
     /**
      * Enable GPS position tracking while in background.
      */
@@ -190,7 +177,15 @@ public class BackgroundModeExt extends CordovaPlugin {
                     Thread.sleep(1000);
                     getApp().runOnUiThread(new Thread(new Runnable() {
                         public void run() {
-                            disableWebViewOptimizationsSync();
+                            View view = webView.getEngine().getView();
+                    
+                            try {
+                                Class.forName("org.crosswalk.engine.XWalkCordovaView")
+                                     .getMethod("onShow")
+                                     .invoke(view);
+                            } catch (Exception e){
+                                view.dispatchWindowVisibilityChanged(View.VISIBLE);
+                            }
                         }
                     }));
                 } catch (InterruptedException e) {
@@ -391,30 +386,21 @@ public class BackgroundModeExt extends CordovaPlugin {
         }
     }
 
-    private void addScreenAndKeyguardFlagsSync()
-    {
-        getApp().getWindow().addFlags(
-            FLAG_ALLOW_LOCK_WHILE_SCREEN_ON |
-            FLAG_SHOW_WHEN_LOCKED |
-            FLAG_TURN_SCREEN_ON |
-            FLAG_DISMISS_KEYGUARD);
-    }
-
     /**
      * Adds required flags to the window to unlock/wakeup the device.
      */
     private void addSreenAndKeyguardFlags()
     {
-        getApp().runOnUiThread(addScreenAndKeyguardFlagsSync());
-    }
-
-    private void clearScreenAndKeyguardFlagsSync()
-    {
-        getApp().getWindow().clearFlags(
-            FLAG_ALLOW_LOCK_WHILE_SCREEN_ON |
-            FLAG_SHOW_WHEN_LOCKED |
-            FLAG_TURN_SCREEN_ON |
-            FLAG_DISMISS_KEYGUARD);
+        getApp().runOnUiThread(new Thread(new Runnable() {
+            public void run()
+            {
+                getApp().getWindow().addFlags(
+                    FLAG_ALLOW_LOCK_WHILE_SCREEN_ON |
+                    FLAG_SHOW_WHEN_LOCKED |
+                    FLAG_TURN_SCREEN_ON |
+                    FLAG_DISMISS_KEYGUARD);
+            }
+        }));
     }
 
     /**
@@ -422,12 +408,13 @@ public class BackgroundModeExt extends CordovaPlugin {
      */
     private void clearScreenAndKeyguardFlags()
     {
-        getApp().runOnUiThread(clearScreenAndKeyguardFlagsSync());
-    }
-
-    static void clearKeyguardFlagsSync(Activity app)
-    {
-        app.getWindow().clearFlags(FLAG_DISMISS_KEYGUARD);
+        getApp().runOnUiThread(new Thread(new Runnable() {
+            getApp().getWindow().clearFlags(
+                FLAG_ALLOW_LOCK_WHILE_SCREEN_ON |
+                FLAG_SHOW_WHEN_LOCKED |
+                FLAG_TURN_SCREEN_ON |
+                FLAG_DISMISS_KEYGUARD);
+        }));
     }
 
     /**
@@ -435,7 +422,9 @@ public class BackgroundModeExt extends CordovaPlugin {
      */
     static void clearKeyguardFlags (Activity app)
     {
-        app.runOnUiThread(clearKeyguardFlagsSync(app));
+        app.runOnUiThread(new Thread(new Runnable() {
+            app.getWindow().clearFlags(FLAG_DISMISS_KEYGUARD);
+        }));
     }
 
     /**
